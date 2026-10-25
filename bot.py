@@ -6,6 +6,7 @@ import os
 from collections import defaultdict, deque
 
 import anthropic
+import dummy
 from dotenv import load_dotenv
 from telegram import Update
 from telegram.constants import ChatAction, ParseMode
@@ -44,7 +45,14 @@ logging.basicConfig(
 logging.getLogger("httpx").setLevel(logging.WARNING)
 log = logging.getLogger("smart-bot")
 
-client = anthropic.AsyncAnthropic()  # ANTHROPIC_API_KEY muhit o'zgaruvchisidan olinadi
+# Demo rejim: DEMO_MODE=true bo'lsa yoki API kalit berilmagan bo'lsa — AI'siz ishlaydi
+DEMO_MODE = (
+    os.getenv("DEMO_MODE", "").lower() in ("1", "true", "yes")
+    or not os.getenv("ANTHROPIC_API_KEY")
+)
+
+# ANTHROPIC_API_KEY muhit o'zgaruvchisidan olinadi
+client = None if DEMO_MODE else anthropic.AsyncAnthropic()
 
 # Har bir foydalanuvchi uchun suhbat tarixi (faqat matn, xotirada saqlanadi)
 histories: dict[int, deque] = defaultdict(lambda: deque(maxlen=MAX_HISTORY))
@@ -77,6 +85,9 @@ def build_messages(user_id: int, content) -> list[dict]:
 
 
 async def ask_claude(user_id: int, content, history_text: str) -> str:
+    if DEMO_MODE:
+        return dummy.reply(history_text)
+
     messages = build_messages(user_id, content)
     try:
         response = await client.beta.messages.create(
@@ -214,7 +225,10 @@ def main() -> None:
     app.add_handler(MessageHandler(~filters.COMMAND, handle_other))
     app.add_error_handler(on_error)
 
-    log.info("Bot ishga tushdi (model: %s)", CLAUDE_MODEL)
+    if DEMO_MODE:
+        log.warning("Bot DEMO rejimda ishga tushdi (AI ulanmagan)")
+    else:
+        log.info("Bot ishga tushdi (model: %s)", CLAUDE_MODEL)
     app.run_polling(allowed_updates=Update.ALL_TYPES)
 
 

@@ -58,7 +58,8 @@ python bot.py
 | O'zgaruvchi          | Tavsif                                                      | Standart          |
 |----------------------|-------------------------------------------------------------|-------------------|
 | `TELEGRAM_BOT_TOKEN` | BotFather tokeni (majburiy)                                 | —                 |
-| `ANTHROPIC_API_KEY`  | Anthropic API kaliti (majburiy)                             | —                 |
+| `ANTHROPIC_API_KEY`  | Anthropic API kaliti (bo'sh bo'lsa — demo rejim)            | —                 |
+| `DEMO_MODE`          | `true` — API kalitsiz demo rejimni majburan yoqish          | `false`           |
 | `CLAUDE_MODEL`       | Model nomi                                                  | `claude-opus-5-5` |
 | `CLAUDE_EFFORT`      | Fikrlash darajasi: `low`/`medium`/`high`/`xhigh`/`max`      | `medium`          |
 | `MAX_HISTORY`        | Eslab qolinadigan xabarlar soni                             | `20`              |
@@ -66,6 +67,18 @@ python bot.py
 | `SYSTEM_PROMPT`      | Bot xarakterini o'zgartirish uchun ko'rsatma                | o'zbekcha prompt  |
 
 > 💡 Arzonroq va tezroq ishlashi uchun `CLAUDE_EFFORT=low` yoki `CLAUDE_MODEL=claude-haiku-5-5` qo'ying.
+
+## 🧪 Demo rejim (API kalitsiz)
+
+`ANTHROPIC_API_KEY` bo'sh bo'lsa yoki `DEMO_MODE=true` bo'lsa, bot AI'siz ishlaydi —
+faqat `TELEGRAM_BOT_TOKEN` yetarli. Demo rejimda bot:
+
+- salomlashadi va xayrlashadi 👋
+- hisoblaydi: `12*7+5`, `2^10`, `(15+5)/4` 🧮
+- soat va sanani aytadi 🕐
+- latifa va qiziqarli fakt aytadi 😄
+
+Har bir javob oxirida `🧪 Demo rejim` belgisi turadi. Kod: [`dummy.py`](dummy.py).
 
 ## 🐳 Docker orqali
 
